@@ -1,0 +1,112 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Restaurant Order to Message Queue via  NodeJS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .restaurant {
+            background-color: #764abc;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4"
+                src="https://www.cp.eng.chula.ac.th/wp-content/uploads/2014/08/ChulaEngineeringComputer-formal.png" alt="Logo"
+                height="72">
+            <h2>Menu's List</h2>
+            <p class="lead">Example frontend for placing order with Node.js and RabbitMQ</p>
+        </div>
+
+        <table class="table" id="Menus_table">
+            <thead>
+                <tr>
+                    <th>Menu ID</th>
+                    <th>Name</th>
+                    <th>Price</th>                 
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each results}}
+                <tr>
+                    <td>{{ id }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ price }} THB</td>
+                    <td>
+                        <a href="javascript:void(0);" class="btn btn-sm edit restaurant" data-id="{{ id }}"
+                            data-name="{{ name }}" data-price=1>Order</a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">No data to display.</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Order Menu Modal -->
+    <form action="/placeorder" method="post">
+        <div class="modal fade" id="editMenuModal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Order Menu</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-control name" placeholder="Menu Name"
+                                required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="number" name="quantity" class="form-control quantity" placeholder="1"
+                                required="required">
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="id" class="menu_id">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn logrocket">Place order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+        <script>
+        $(document).ready(function () {
+            $('#Menus_table').on('click', '.edit', function () {
+                $('#editMenuModal').modal('show');
+
+                $('.menu_id').val($(this).data('id'));
+                $('.name').val($(this).data('name'));
+                $('.price').val($(this).data('price'));
+                $('.address').val($(this).data('address'));
+            }).on('click', '.remove', function () {
+                $('#removeMenuModal').modal('show');
+
+                $('.Menu_id_removal').val($(this).data('id'));
+            });
+        });
+    </script>
+
+</body>
+
+</html>
