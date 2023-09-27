@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
 // Import dependencies
-const amqp = require("amqplib/callback_api");
-const process = require("process");
 const { createLogger, format, transports } = require("winston");
+require("dotenv").config({ path: `../.env` });
+const {
+  connectToRabbitMQ,
+  createChannel,
+  handleTermination,
+} = require("../client/rabbitmq");
 
 const logger = createLogger({
   level: "debug",
@@ -25,30 +29,6 @@ const kitchenCookableFood = [
   foodType,
 ];
 
-// Establish connection to RabbitMQ
-function connectToRabbitMQ(url) {
-  return new Promise((resolve, reject) => {
-    amqp.connect(url, function (err, connection) {
-      if (err) {
-        reject(err);
-      }
-      resolve(connection);
-    });
-  });
-}
-
-// Create a channel
-function createChannel(connection) {
-  return new Promise((resolve, reject) => {
-    connection.createChannel(function (err, channel) {
-      if (err) {
-        reject(err);
-      }
-      resolve(channel);
-    });
-  });
-}
-
 // Consune message from a queue
 function consumeMessage(channel, queue) {
   return new Promise((resolve, reject) => {
@@ -58,7 +38,7 @@ function consumeMessage(channel, queue) {
       (msg) => {
         const secs = msg.content.toString().split(".").length - 1;
         logger.info(" [x] Received");
-        logger.info(JSON.parse(msg.content));
+        logger.info(msg.content);
 
         setTimeout(function () {
           logger.info(" [x] Done");
@@ -73,20 +53,12 @@ function consumeMessage(channel, queue) {
   });
 }
 
-// Handle process termination
-function handleTermination(channel, connection) {
-  process.on("SIGINT", function () {
-    logger.info("Received SIGINT. Closing channel and connection...");
-    channel.close();
-    connection.close();
-    process.exit(0);
-  });
-}
-
 async function startConsumer(url, kitchenId, cookableFood) {
   try {
     const connection = await connectToRabbitMQ(url);
     const channel = await createChannel(connection);
+
+    logger.debug(`Consumer RabbitMQ connection: ${connection}`);
 
     const exchange = "order_exchange";
     channel.assertExchange(exchange, "direct", {
@@ -114,12 +86,12 @@ async function startConsumer(url, kitchenId, cookableFood) {
   } catch (err) {
     logger.error(`An error occured: ${err.message}`);
   }
-  process.exit(1);
 }
 
 const url = process.env.CLOUDAMQP_URL || "amqp://localhost";
 logger.info(`Connecting to RabbitMQ at ${url}...`);
 
-for (let i = 0; i < kitchenCookableFood.length; i++) {
-  startConsumer(url, i, kitchenCookableFood[i]);
-}
+startConsumer(url, 1, kitchenCookableFood[0]);
+startConsumer(url, 2, kitchenCookableFood[1]);
+startConsumer(url, 3, kitchenCookableFood[2]);
+startConsumer(url, 4, kitchenCookableFood[3]);
