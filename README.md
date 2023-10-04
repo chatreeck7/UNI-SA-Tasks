@@ -6,7 +6,7 @@ Bundle of assignment for senior course about software architecture
 ## General
 ```
 npm install
-npm start in restaurant_w_order
+npm start #in restaurant_w_order dir
 ```
 
 ## For our Publisher/Provider 
