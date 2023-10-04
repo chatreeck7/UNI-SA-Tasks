@@ -43,7 +43,7 @@ node <yourpath>/restaurant_w_order/server/kitchen.js
 docker compose up -d --build
 ```
 ### Run your consumer
-```
+
 ```
 node <yourpath>/restaurant_w_order/server/kitchen-kafka.js
 ```
