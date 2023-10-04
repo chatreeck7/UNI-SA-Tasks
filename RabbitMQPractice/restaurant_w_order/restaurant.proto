@@ -13,7 +13,8 @@ message Empty{}
 message MenuItem {
     string id =1;
     string name=2;
-    int32 price=3;
+    string type=3;
+    int32 price=4;
 }
 
 message MenuList{
