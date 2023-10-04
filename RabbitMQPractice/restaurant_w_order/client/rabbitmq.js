@@ -64,13 +64,16 @@ async function publishOrderToKitchens(url, orderItem) {
       durable: true,
     });
 
-    routingKeys.forEach((key) => {
-      channel.publish(exchange, key, Buffer.from(JSON.stringify(orderItem)), {
+    channel.publish(
+      exchange,
+      orderItem.type,
+      Buffer.from(JSON.stringify(orderItem)),
+      {
         persistent: true,
-      });
-      console.log(` [x] Sent order for ${key}:`, orderItem);
-    });
-    
+      }
+    );
+    console.log(` [x] Sent order for ${orderItem.type}:`, orderItem);
+
     handleTermination(channel, connection);
   } catch (err) {
     logger.error(`An error occured: ${err.message}`);

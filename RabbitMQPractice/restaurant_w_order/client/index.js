@@ -29,6 +29,7 @@ app.post("/placeorder", async (req, res) => {
   const orderItem = {
     id: req.body.id,
     name: req.body.name,
+    type: req.body.type,
     quantity: req.body.quantity,
   };
   try {

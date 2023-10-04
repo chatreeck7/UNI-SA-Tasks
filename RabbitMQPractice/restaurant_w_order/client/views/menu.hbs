@@ -28,6 +28,7 @@
                 <tr>
                     <th>Menu ID</th>
                     <th>Name</th>
+                    <th>Food Type</th>
                     <th>Price</th>                 
                     <th>Action</th>
                 </tr>
@@ -37,10 +38,11 @@
                 <tr>
                     <td>{{ id }}</td>
                     <td>{{ name }}</td>
+                    <td>{{ type }}</td>
                     <td>{{ price }} THB</td>
                     <td>
                         <a href="javascript:void(0);" class="btn btn-sm edit restaurant" data-id="{{ id }}"
-                            data-name="{{ name }}" data-price=1>Order</a>
+                            data-name="{{ name }}" data-type="{{ type }}" data-price=1>Order</a>
                     </td>
                 </tr>
                 {{else}}
@@ -76,6 +78,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="hidden" name="id" class="menu_id">
+                        <input type="hidden" name="type" class="menu_type">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn logrocket">Place order</button>
                     </div>
@@ -94,8 +97,8 @@
         $(document).ready(function () {
             $('#Menus_table').on('click', '.edit', function () {
                 $('#editMenuModal').modal('show');
-
                 $('.menu_id').val($(this).data('id'));
+                $('.menu_type').val($(this).data('type'));  
                 $('.name').val($(this).data('name'));
                 $('.price').val($(this).data('price'));
                 $('.address').val($(this).data('address'));
